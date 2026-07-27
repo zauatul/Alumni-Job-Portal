@@ -8,9 +8,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResumeModule } from './resume/resume.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+import { MailModule } from './mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, JobModule, ApplicationModule,
+  imports: [ ConfigModule.forRoot({
+              isGlobal: true,
+            }),
+            UserModule, JobModule, ApplicationModule,
             TypeOrmModule.forRoot({
               type: 'postgres',
               host: 'localhost',
@@ -24,7 +29,8 @@ import { AdminModule } from './admin/admin.module';
             }),
             ResumeModule,
             AuthModule,
-            AdminModule
+            AdminModule,
+            MailModule
   ],
   controllers: [AppController],
   providers: [AppService],

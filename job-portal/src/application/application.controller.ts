@@ -15,52 +15,59 @@ import { Role } from 'src/common/enums/role.enum';
 import { UpdateStatusDto } from './dtos/update-status.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
+@ApiTags('Applications')
 @Controller('application')
 export class ApplicationController {
   constructor(private readonly applicationService: ApplicationService) {}
 
-  @Post(':jobId')
+  @Post('apply/:jobId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.STUDENT)
   apply(
     @Param('jobId', ParseIntPipe) jobId: number,
-    @Req() req,
+    @CurrentUser('id') studentId: number,
   ) {
-    return this.applicationService.apply(jobId, req.user.id);
+    return this.applicationService.apply(jobId, studentId);
   }
 
-  @Get('my')
+
+  @Get('my-application')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.STUDENT)
-  myApplications(@Req() req) {
-    return this.applicationService.myApplications(req.user.id);
+  myApplications(
+    @CurrentUser('id') studentId: number,
+  ) {
+    return this.applicationService.myApplications(studentId);
   }
 
-  @Get('job/:jobId')
+
+  @Get('PostedJob/:jobId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.RECRUITER)
   getApplicants(
     @Param('jobId', ParseIntPipe) jobId: number,
-    @Req() req,
+    @CurrentUser('id') recruiterId: number,
   ) {
     return this.applicationService.getApplicants(
       jobId,
-      req.user.id,
+      recruiterId,
     );
   }
 
-  @Patch(':applicationId/status')
+  @Patch('PostedJob/:applicationId/status')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.RECRUITER)
   updateStatus(
     @Param('applicationId', ParseIntPipe) id: number,
     @Body() dto: UpdateStatusDto,
-    @Req() req,
+    @CurrentUser('id') recruiterId: number,
   ) {
     return this.applicationService.updateStatus(
       id,
-      req.user.id,
+      recruiterId,
       dto,
     );
   }
