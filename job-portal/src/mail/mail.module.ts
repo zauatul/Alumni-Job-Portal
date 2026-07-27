@@ -14,8 +14,8 @@ import { MailService } from './mail.service';
       inject: [ConfigService],
 
       useFactory: (configService: ConfigService) => {
-  console.log('MAIL_USER:', configService.get('MAIL_USER'));
-  console.log('MAIL_HOST:', configService.get('MAIL_HOST'));
+        console.log('MAIL_USER:', configService.get('MAIL_USER'));
+        console.log('MAIL_HOST:', configService.get('MAIL_HOST'));
 
   return {
     transport: {

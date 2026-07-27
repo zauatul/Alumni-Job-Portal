@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, MoreThanOrEqual, Repository } from 'typeorm';
 import { Application } from './entities/application.entity';
 import { Job } from 'src/job/entities/job.entity';
 import { User } from 'src/user/entities/user.entity';
@@ -105,6 +105,31 @@ export class ApplicationService
 
     return application;
   }
+
+  async searchByTitle(title: string) {
+    return this.jobRepository.find({
+      where: {
+        title: ILike(`%${title}%`),
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
+  async filterByMinSalary(minSalary: number) {
+    return this.jobRepository.find({
+      where: {
+        salary: MoreThanOrEqual(minSalary),
+      },
+      order: {
+        salary: 'DESC',
+      },
+    });
+  }
+
+  
+      
 
   async getApplicants(jobId: number, recruiterId: number) {
     const job = await this.jobRepository.findOne({

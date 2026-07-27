@@ -10,6 +10,7 @@ import {
   Body,
   ParseIntPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { Role } from 'src/common/enums/role.enum';
 import { UpdateStatusDto } from './dtos/update-status.dto';
@@ -37,11 +38,24 @@ export class ApplicationController {
   @Get('my-application')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.STUDENT)
-  myApplications(
-    @CurrentUser('id') studentId: number,
-  ) {
+  myApplications(@CurrentUser('id') studentId: number,) 
+  {
     return this.applicationService.myApplications(studentId);
   }
+
+  @Get('search')
+  @UseGuards(JwtAuthGuard)
+  searchByTitle(@Query('title') title: string,) 
+  {
+    return this.applicationService.searchByTitle(title);
+  }
+
+  @Get('salary')
+  filterByMinSalary(@Query('minSalary', ParseIntPipe)minSalary: number,) 
+  {
+    return this.applicationService.filterByMinSalary(minSalary,);
+  }
+
 
 
   @Get('PostedJob/:jobId')
