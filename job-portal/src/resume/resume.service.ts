@@ -91,4 +91,21 @@ export class ResumeService
     };
   }
 
+  async getResumeById(id: number) {
+    const resume = await this.resumeRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        user: true,
+      },
+    });
+
+    if (!resume) {
+      throw new NotFoundException('Resume not found');
+    }
+
+    return resume;
+  }
+
 }
