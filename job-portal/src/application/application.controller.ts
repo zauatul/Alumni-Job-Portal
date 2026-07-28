@@ -20,12 +20,13 @@ import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @ApiTags('Applications')
+@UseGuards(JwtAuthGuard)
 @Controller('application')
 export class ApplicationController {
   constructor(private readonly applicationService: ApplicationService) {}
 
   @Post('apply/:jobId')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards( RolesGuard)
   @Roles(Role.STUDENT)
   apply(
     @Param('jobId', ParseIntPipe) jobId: number,
@@ -36,21 +37,24 @@ export class ApplicationController {
 
 
   @Get('my-application')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Roles(Role.STUDENT)
   myApplications(@CurrentUser('id') studentId: number,) 
   {
     return this.applicationService.myApplications(studentId);
   }
 
-  @Get('search')
-  @UseGuards(JwtAuthGuard)
+  @Get('job-search-by-title')
+  @UseGuards( RolesGuard)
+  @Roles(Role.STUDENT)
   searchByTitle(@Query('title') title: string,) 
   {
     return this.applicationService.searchByTitle(title);
   }
 
-  @Get('salary')
+  @Get('job-filter-by-minSalary')
+  @UseGuards( RolesGuard)
+  @Roles(Role.STUDENT)
   filterByMinSalary(@Query('minSalary', ParseIntPipe)minSalary: number,) 
   {
     return this.applicationService.filterByMinSalary(minSalary,);
@@ -58,8 +62,8 @@ export class ApplicationController {
 
 
 
-  @Get('PostedJob/:jobId')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('applicants/:jobId')
+  @UseGuards( RolesGuard)
   @Roles(Role.RECRUITER)
   getApplicants(
     @Param('jobId', ParseIntPipe) jobId: number,
@@ -71,7 +75,7 @@ export class ApplicationController {
     );
   }
 
-  @Patch('PostedJob/:applicationId/status')
+  @Patch('applicants-status/:applicationId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.RECRUITER)
   updateStatus(

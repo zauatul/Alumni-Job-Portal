@@ -22,31 +22,36 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 
 @ApiTags('Jobs')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('job')
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
-  @Get()
+  @UseGuards(RolesGuard)
+  @Roles(Role.STUDENT)
+  @Get("find-job")
   findAll() {
     return this.jobService.findAll();
   }
 
-  @Get('my-jobs')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
+  @Roles(Role.STUDENT)
+  @Get('find-job/:id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.jobService.findOne(id);
+  }
+
+  @Get('posted-jobs')
+  @UseGuards(RolesGuard)
   @Roles(Role.RECRUITER)
   findMyJobs(@CurrentUser('id') recruiterId: number) {
   return this.jobService.findMyJobs(recruiterId);
 }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.jobService.findOne(id);
-  }
-
-  @Post()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  
+  @Post("post-job")
+  @UseGuards( RolesGuard)
   @Roles(Role.RECRUITER)
   create(
   @Body() dto: CreateJobDto,
@@ -55,9 +60,8 @@ export class JobController {
     return this.jobService.create(recruiterId, dto);
   }
 
-  @Patch(':id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('update-job/:id')
+  @UseGuards( RolesGuard)
   @Roles(Role.RECRUITER)
   update(
   @Param('id', ParseIntPipe) id: number,
@@ -71,9 +75,8 @@ export class JobController {
     );
   }
 
-  @Delete(':id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Delete('delete-job/:id')
+  @UseGuards( RolesGuard)
   @Roles(Role.RECRUITER)
   remove(
   @Param('id', ParseIntPipe) id: number,

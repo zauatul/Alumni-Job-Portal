@@ -35,10 +35,10 @@ export class UserService
         where: { email },
       });
 
-      if(!user)
-      {
-        throw new UserNotFoundException();
-      }
+      // if(!user)
+      // {
+      //   throw new UserNotFoundException();
+      // }
       
       return{
         message: "User Found",

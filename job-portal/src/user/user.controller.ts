@@ -19,8 +19,9 @@ export class UserController {
   // {
   //   return this.userService.getAllUser();
   // }
-
-  @Patch(":email")
+  
+  @Patch("update/:email")
+  @UseGuards(JwtAuthGuard)
   updateProfile(@Param("email") email: string, @Body() dto: UpdateUserDto)
   {
     return this.userService.updateProfile(email, dto);

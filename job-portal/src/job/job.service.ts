@@ -6,7 +6,6 @@ import { User } from 'src/user/entities/user.entity';
 import { CreateJobDto } from './dtos/create-job.dto';
 import { UpdateJobDto } from './dtos/update-job.dto';
 import { JobNotFoundException } from 'src/common/exceptions/job-not-found.exception';
-import { MailService } from 'src/mail/mail.service';
 import { UnauthorizedRecruiterException } from 'src/common/exceptions/unauthorized-recruiter.exception';
 
 @Injectable()
@@ -79,7 +78,6 @@ export class JobService
     }
 
     return job;
-
 
   }
 

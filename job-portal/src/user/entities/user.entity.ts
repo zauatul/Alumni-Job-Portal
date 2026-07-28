@@ -54,12 +54,6 @@ export class User {
   })
   bio: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-  })
-  profilePicture: string;
-
   @CreateDateColumn()
   createdAt: Date;
 
